@@ -12,7 +12,6 @@ def get_handler():
 
         def do_GET(self):
             nonlocal neighbours
-            print(neighbours)
             self._set_headers()
             response = 'http://localhost:8000/ or http://localhost:8000/new?port=8080'
 

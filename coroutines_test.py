@@ -1,15 +1,10 @@
 from asyncio import run
-import asynctest
-from initialize_nodes import do_stuff
 from itertools import permutations
 from coroutines import Network, NetworkFunction
 from unittest.mock import Mock
-import unittest
-from time import time
-import threading
+from unittest import main, TestCase
 
-
-class CoroutinesTest(unittest.TestCase):
+class CoroutinesTest(TestCase):
     def setUp(self):
         self.g = Network(NetworkFunction())
         self.graph = set()
@@ -50,4 +45,4 @@ class CoroutinesTest(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    unittest.main()
+    main()

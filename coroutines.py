@@ -1,5 +1,6 @@
 from asyncio import create_task, gather, sleep
 from requests import get
+import aiohttp
 
 class Network:
     def __init__(self, function):
@@ -12,7 +13,6 @@ class Network:
             for neighbour in neighbours:
                 if node != neighbour:
                     self.function.add_edge(node,neighbour)
-                await sleep(0.66)
                     
         await gather(*[create_task(connect(neighbour))
                        for neighbour in neighbours])
@@ -25,14 +25,12 @@ class Network:
 
         def get_next(node):
             neighbours = self.function.get_neighbours(node)
+            
             if len(neighbours) == 0:
                 return None
 
-            degrees = [[-get_degree(neighbour),neighbour]
-                       for neighbour in neighbours]
-            
-            degrees.sort()
-            return degrees[0][1]
+            return min(set((-get_degree(neighbour),neighbour)
+                           for neighbour in neighbours))[1]
 
         current_node = start
         next_node = get_next(current_node)
@@ -53,7 +51,7 @@ class Network:
                 visited.add(node)
                 if distance == 4:
                     answer.add(node)
-                else:
+                elif distance < 4:
                     await gather(*[calculate(neighbour, distance+1, visited)
                                    for neighbour in self.function.get_neighbours(node)])
 
@@ -68,9 +66,11 @@ class NetworkFunction:
     def add_edge(self,node1,node2):
         get(header + F"{node1}/new?port={node2}")
     
-    def get_neighbours(self,node):
+    async def get_neighbours(node):
         try:
-            return list(map(int,get(header + str(node)).text.split(',')))
+            async with aiohttp.ClientSession() as session:
+                async with session.get(host + str(node)) as resp:
+                    return list(str(await resp.text()).split(','))
         except:
             return []
 
