@@ -66,7 +66,7 @@ class NetworkFunction:
     def add_edge(self,node1,node2):
         get(header + F"{node1}/new?port={node2}")
     
-    async def get_neighbours(node):
+    async def get_neighbours(self,node):
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(host + str(node)) as resp:

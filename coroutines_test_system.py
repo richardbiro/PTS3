@@ -19,6 +19,7 @@ class SystemTest(TestCase):
         self.g.function.get_neighbours = Mock(side_effect = lambda node1:
                                               list(node2 for (node,node2)
                                                    in self.graph if node == node1))
+
         graph_base = 8030
         
         self.graph = {(0, 1),
@@ -46,7 +47,7 @@ class SystemTest(TestCase):
         self.assertEqual(run(self.g.distance4(8030)), {8036})
         
         run(self.g.complete_neighbourhood(8031))
-        print(self.graph)
+        self.assertEqual(set(self.g.function.get_neighbours(8034)),{8032,8033,8035,8037})
         
         self.assertEqual(run(self.g.climb_degree(8030)), 8034)
         self.assertEqual(run(self.g.distance4(8030)), {8036})
